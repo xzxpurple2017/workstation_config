@@ -1,0 +1,229 @@
+---
+# Be sure to install Ansible via Pip3 
+# Run the following first:
+# 
+# 'sudo pip3 install ansible'
+# 
+# Then, run the following to execute this playbook:
+# 
+# 'ansible-playbook -K playbook.yml'
+# 
+- name: run the playbook tasks on the localhost
+  hosts: 127.0.0.1
+  connection: local
+  become: yes
+  tasks:
+ 
+  # Turn on firewall
+  - ufw:
+      state: enabled
+      policy: reject
+
+  # Add repository for MongoDB
+  - name: Add MongoDB repository
+    apt_key:
+      keyserver: keyserver.ubuntu.com
+      id: 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+
+  - name: Creating file list for MongoDB
+    apt_repository: 
+      repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse
+      state: present
+
+  # Install generic packages
+  - name: Run the equivalent of "apt-get update" and "apt-get upgrade -y" 
+    apt:
+      update_cache: yes 
+  - apt:
+      upgrade: yes
+
+  - name: Install list of basic packages
+    apt: name={{item}} state=present
+    with_items:
+         - adcli
+         - clamav
+         - curl
+         - duplicity
+         - figlet
+         - ffmpeg
+         - gcc
+         - git
+         - gnome-tweak-tool
+         - gnupg
+         - gnupg2
+         - google-chrome-stable
+         - iptraf
+         - krb5-user
+         - ldapscripts
+         - libvirt-daemon
+         - lm-sensors
+         - mlocate
+         - mongodb-org
+         - netcat-traditional
+         - net-tools
+         - nmap
+         - nslcd
+         - nslcd-utils
+         - openssl
+         - openvpn
+         - packagekit
+         - parallel
+         - pcscd
+         - perl
+         - pm-utils
+         - powertop
+         - pvm
+         - python3-dev
+         - python3-pip
+         - python3-setuptools
+         - qemu-kvm
+         - realmd
+         - resolvconf
+         - samba-common
+         - scdaemon
+         - screen
+         - sssd
+         - strace
+         - sysstat
+         - tcpdump
+         - tmux
+         - tree
+         - unzip
+         - uswsusp
+         - vagrant
+         - vim
+         - virt-manager
+         - vlc
+         - wget
+         - whois
+         - wireshark
+
+  - name: Install list of Python3 packages
+    pip: name={{item}} state=present
+    with_items:
+         - pymongo
+         - requests[security]
+
+  # Install Snap packages now
+  # As of 06/20/2018, there is no native Ansible Snap module
+  - name: Install list of Snap packages 
+    shell: |
+      LIST_OF_SNAPS='postman skype slack vscode'
+
+      installed="$( sudo snap list )"
+      declare -a output_msg=()
+      for i in $LIST_OF_SNAPS ; do
+          var=$( echo "$installed" | grep $i )
+          ret=$?
+          if  [[ $ret -ne 0 ]] ; then
+              snap install $i >/dev/null 2>&1
+              ret=$?
+              if [[ $ret -eq 0 ]] ; then
+                  output_msg+=("Installed $i")
+              else
+                  output_msg+=("Error installing $i")
+              fi
+          else
+              echo "$var"
+          fi
+      done
+      if [[ -n ${output_msg[@]} ]] ; then
+          echo
+          for i in "${output_msg[@]}" ; do
+              echo "$i"
+          done
+          echo
+          echo "--------------------------------"
+          echo "Installed new Snaps: true"
+      else
+          echo "Installed new Snaps: false"
+      fi
+      
+    args:
+      executable: /bin/bash
+      warn: no
+    changed_when: '"true" in snap_package_check.stdout'
+    register: snap_package_check
+  - name: Print out Snap install information
+    debug:
+      msg: "{{ snap_package_check.stdout_lines }}" 
+
+  # Install the latest Python3 Boto3 module from GitHub
+  - name: Install Python3 Boto3
+    git:
+      repo: https://github.com/boto/boto3.git
+      dest: /opt/boto3
+      clone: yes
+      update: yes
+  - shell: |
+      curr_boto3_ver=$( echo \'`python3 -c "import boto3 ; print(boto3.__version__) ;"`\' )
+      new_boto3_ver=$( sed -n "s/^__version__ = //p" /opt/boto3/boto3/__init__.py )
+      if [[ $curr_boto3_ver != $new_boto3_ver ]] ; then
+          cd /opt/boto3
+          python3 setup.py install >/dev/null 2>&1
+          updated='true'
+      else
+          updated='false'
+      fi
+      echo "Current boto3 ver: $curr_boto3_ver"
+      echo "Latest boto3 ver: $new_boto3_ver"
+      echo "Updated: $updated"
+    args:
+      executable: /bin/bash
+      warn: no
+    # This checks whether or not there were updates performed
+    changed_when: '"true" in boto3_ver_output_check.stdout'
+    register: boto3_ver_output_check
+  - name: Print out Boto3 install info
+    debug:
+      msg: "{{ boto3_ver_output_check.stdout_lines }}"
+
+  # For now, just always keep downloading and installing AWS CLI
+  # TODO: Find a way to query latest version and only download when needed
+  - name: Download and unzip latest AWS CLI 
+    unarchive:
+      src: https://s3.amazonaws.com/aws-cli/awscli-bundle.zip
+      dest: /tmp
+      remote_src: yes 
+  - name: Install latest AWS CLI 
+    shell: |
+      /tmp/awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws 
+      rm -f /usr/bin/aws 
+      ln -s /usr/local/aws/bin/aws /usr/bin/aws
+      # Delete downloaded archive
+      rm -rf /tmp/awscli-bundle
+    args:
+      executable: /bin/bash
+
+
+  # Configure groups
+  - name: Make sure we have a 'wheel' group
+    group:
+      name: wheel
+      state: present
+
+  - name: Allow 'wheel' group to have passwordless sudo
+    lineinfile:
+      dest: /etc/sudoers
+      state: present
+      regexp: '^%wheel'
+      line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+      validate: 'visudo -cf %s'
+
+  - name: Make sure we have all the groups
+    group: name={{item}} state=present
+    with_items:
+         - hackers
+         - libvirt
+
+  # Configure users
+  - name: Add user 'philip'
+    user:
+      name: philip
+      comment: "System administrator"
+      shell: /bin/bash
+      group: hackers
+      groups: sudo,wheel,libvirt
+      append: yes
+      state: present
+      createhome: yes
