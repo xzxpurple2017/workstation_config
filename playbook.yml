@@ -53,6 +53,7 @@
          - gnupg2
          - google-chrome-stable
          - iptraf
+         - jq
          - krb5-user
          - ldapscripts
          - libvirt-daemon
@@ -220,7 +221,7 @@
   - name: Add user 'philip'
     user:
       name: philip
-      comment: "System administrator"
+      comment: "Philip Dam"
       shell: /bin/bash
       group: hackers
       groups: sudo,wheel,libvirt
