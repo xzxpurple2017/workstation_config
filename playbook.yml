@@ -2,6 +2,7 @@
 # Be sure to install Ansible via Pip3 
 # Run the following first:
 # 
+# 'sudo apt-get install python3-pip -y'
 # 'sudo pip3 install ansible'
 # 
 # Then, run the following to execute this playbook:
