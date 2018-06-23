@@ -53,12 +53,14 @@
          - gnupg
          - gnupg2
          - google-chrome-stable
+         - htop
          - iptraf
          - jq
          - krb5-user
          - ldapscripts
          - libvirt-daemon
          - lm-sensors
+         - mc
          - mlocate
          - mongodb-org
          - netcat-traditional
@@ -66,6 +68,7 @@
          - nmap
          - nslcd
          - nslcd-utils
+         - openjdk-8-jdk
          - openssl
          - openvpn
          - packagekit
