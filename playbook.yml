@@ -106,8 +106,16 @@
   - name: Install list of Python3 packages
     pip: name={{item}} state=present
     with_items:
+         - aiohttp
+         - elasticsearch
+         - flask
+         - pylint
          - pymongo
+         - PyMySQL
+         - PyYAML 
+         - python-redfish
          - requests[security]
+         - uvloop
 
   # Install Snap packages now
   # As of 06/20/2018, there is no native Ansible Snap module
