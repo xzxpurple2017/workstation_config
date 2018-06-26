@@ -20,6 +20,11 @@
       state: enabled
       policy: reject
 
+  # Add repository for Yubico Authenticator
+  - name: Add Yubico Authenticator
+    apt_repository:
+      repo: 'ppa:yubico/stable'
+
   # Add repository for MongoDB
   - name: Add MongoDB repository
     apt_key:
@@ -102,6 +107,7 @@
          - wget
          - whois
          - wireshark
+         - yubioath-desktop
 
   - name: Install list of Python3 packages
     pip: name={{item}} state=present
