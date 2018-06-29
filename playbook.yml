@@ -20,8 +20,19 @@
       state: enabled
       policy: reject
 
+  # Add repository for Desktop Riot
+  - name: Add Desktop Riot repo keys
+    apt_key:
+      url: https://riot.im/packages/debian/repo-key.asc
+      state: present
+  
+  - name: Add Desktop Riot repository
+    apt_repository: 
+      repo: deb https://riot.im/packages/debian/ artful main
+      state: present
+
   # Add repository for Yubico Authenticator
-  - name: Add Yubico Authenticator
+  - name: Add Yubico Authenticator repository
     apt_repository:
       repo: 'ppa:yubico/stable'
 
@@ -89,6 +100,7 @@
          - qemu-kvm
          - realmd
          - resolvconf
+         - riot-web
          - samba-common
          - scdaemon
          - screen
