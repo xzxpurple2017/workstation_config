@@ -69,6 +69,7 @@
          - gnupg
          - gnupg2
          - google-chrome-stable
+         - gthumb
          - htop
          - iptraf
          - jq
