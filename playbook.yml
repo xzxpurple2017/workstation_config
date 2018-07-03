@@ -70,6 +70,7 @@
          - gnupg2
          - google-chrome-stable
          - gthumb
+         - gvncviewer
          - htop
          - iptraf
          - jq
