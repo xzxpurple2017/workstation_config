@@ -58,9 +58,11 @@
     apt: name={{item}} state=present
     with_items:
          - adcli
+         - build-essential
          - clamav
          - curl
          - duplicity
+         - easytag
          - figlet
          - ffmpeg
          - gcc
@@ -76,6 +78,8 @@
          - jq
          - krb5-user
          - ldapscripts
+         - libffi-dev
+         - libssl-dev
          - libvirt-daemon
          - libvirt-dev
          - libxml2-dev
