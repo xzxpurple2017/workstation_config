@@ -64,6 +64,7 @@
          - duplicity
          - easytag
          - figlet
+         - flashplugin-installer
          - ffmpeg
          - gcc
          - git
