@@ -47,6 +47,17 @@
       repo: deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse
       state: present
 
+  # Add repository for Kubernetes
+  - name: Add Kubernetes repo keys
+    apt_key:
+      url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+      state: present
+
+  - name: Add Kubernetes repository
+    apt_repository: 
+      repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+      state: present
+
   # Install generic packages
   - name: Run the equivalent of "apt-get update" and "apt-get upgrade -y" 
     apt:
@@ -58,9 +69,11 @@
     apt: name={{item}} state=present
     with_items:
          - adcli
+         - apt-transport-https
          - build-essential
          - clamav
          - curl
+         - docker.io
          - duplicity
          - easytag
          - figlet
@@ -78,6 +91,10 @@
          - iptraf
          - jq
          - krb5-user
+           #- kubeadm
+           #- kubectl
+           #- kubelet
+           #- kubernetes-cni
          - ldapscripts
          - libffi-dev
          - libssl-dev
