@@ -137,6 +137,7 @@
          - sysstat
          - tcpdump
          - tmux
+         - traceroute
          - tree
          - unzip
          - uswsusp
