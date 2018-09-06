@@ -105,6 +105,7 @@
          - libxml2-dev
          - libxslt-dev
          - lm-sensors
+         - lua-cjson
          - mc
          - mlocate
          - mongodb-org
@@ -148,6 +149,8 @@
          - virt-manager
          - virtualbox
          - vlc
+         - weechat
+         - weechat-scripts
          - wget
          - whois
          - wireshark
