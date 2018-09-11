@@ -121,9 +121,11 @@
          - parallel
          - pcscd
          - perl
+         - pinentry-gtk2
          - pm-utils
          - powertop
          - pvm
+         - pyside
          - python3-dev
          - python3-pip
          - python3-setuptools
@@ -137,6 +139,7 @@
          - screen
          - sssd
          - strace
+         - swig
          - sysstat
          - tcpdump
          - tmux
@@ -156,6 +159,9 @@
          - wireshark
          - xclip
          - yubioath-desktop
+         - yubikey-manager
+         - yubikey-personalization
+         - yubikey-personalization-gui
          - zlib1g-dev
 
   - name: Install list of Python3 packages
