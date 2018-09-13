@@ -82,6 +82,7 @@
          - flashplugin-installer
          - ffmpeg
          - gcc
+         - gimp
          - git
          - gnome-tweak-tool
          - gnupg
