@@ -135,6 +135,7 @@
          - riot-web
          - ruby-dev
          - samba-common
+         - say
          - scdaemon
          - screen
          - sssd
