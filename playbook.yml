@@ -164,6 +164,7 @@
          - yubikey-personalization
          - yubikey-personalization-gui
          - zlib1g-dev
+    ignore_errors: yes
 
   - name: Install list of Python3 packages
     pip: name={{item}} state=present
@@ -178,6 +179,7 @@
          - python-redfish
          - requests[security]
          - uvloop
+    ignore_errors: yes
 
   # Install Snap packages now
   # As of 06/20/2018, there is no native Ansible Snap module
